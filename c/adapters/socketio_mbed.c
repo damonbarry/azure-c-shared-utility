@@ -254,6 +254,11 @@ int socketio_close(CONCRETE_IO_HANDLE socket_io, ON_IO_CLOSE_COMPLETE on_io_clos
             socket_io_instance->tcp_socket_connection = NULL;
             socket_io_instance->io_state = IO_STATE_CLOSED;
 
+            if (on_io_close_complete != NULL)
+            {
+                on_io_close_complete(callback_context);
+            }
+
             result = 0;
         }
     }
