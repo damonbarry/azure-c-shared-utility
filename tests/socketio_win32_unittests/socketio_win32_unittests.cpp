@@ -176,6 +176,8 @@ public:
     MOCK_METHOD_END(int, 0);
     MOCK_STATIC_METHOD_3(, int, ioctlsocket, SOCKET, s, long, cmd, u_long FAR*, argp)
     MOCK_METHOD_END(int, 0);
+    MOCK_STATIC_METHOD_9(, int, WSAIoctl, SOCKET, s, DWORD, dwIoControlCode, LPVOID, lpvInBuffer, DWORD, cbInBuffer, LPVOID, lpvOutBuffer, DWORD, cbOutBuffer, LPDWORD, lpcbBytesReturned, LPWSAOVERLAPPED, lpOverlapped, LPWSAOVERLAPPED_COMPLETION_ROUTINE, lpCompletionRoutine)
+    MOCK_METHOD_END(int, 0);
 };
 
 extern "C"
@@ -201,6 +203,7 @@ extern "C"
     DECLARE_GLOBAL_MOCK_METHOD_0(socketio_mocks, , int WSAAPI, WSAGetLastError);
     DECLARE_GLOBAL_MOCK_METHOD_3(socketio_mocks, , int WSAAPI, ioctlsocket, SOCKET, s, long, cmd, u_long FAR*, argp)
     DECLARE_GLOBAL_MOCK_METHOD_1(socketio_mocks, , void WSAAPI, freeaddrinfo, PADDRINFOA, pResult);
+    DECLARE_GLOBAL_MOCK_METHOD_9(socketio_mocks, , int WSAAPI, WSAIoctl, SOCKET, s, DWORD, dwIoControlCode, LPVOID, lpvInBuffer, DWORD, cbInBuffer, LPVOID, lpvOutBuffer, DWORD, cbOutBuffer, LPDWORD, lpcbBytesReturned, LPWSAOVERLAPPED, lpOverlapped, LPWSAOVERLAPPED_COMPLETION_ROUTINE, lpCompletionRoutine);
 }
 
 static void test_on_bytes_received(void* context, const unsigned char* buffer, size_t size)
