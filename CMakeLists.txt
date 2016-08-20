@@ -789,3 +789,4 @@ else()
     install (FILES ${source_h_files} DESTINATION include/azureiot/azure_c_shared_utility)
 endif (WIN32)
 
+add_subdirectory(sample)
