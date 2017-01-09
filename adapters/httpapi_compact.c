@@ -60,8 +60,8 @@ static int ParseStringToDecimal(const char *src, int* dst)
 {
     int result;
     char* next;
-    (*dst) = strtol(src, &next, 0);
-    if ((src == next) || ((((*dst) == LONG_MAX) || ((*dst) == LONG_MIN)) && (errno != 0)))
+    long num = strtol(src, &next, 0);
+    if (src == next || num < INT_MIN || num > INT_MAX)
     {
         result = EOF;
     }
@@ -69,6 +69,9 @@ static int ParseStringToDecimal(const char *src, int* dst)
     {
         result = 1;
     }
+    if (num < INT_MIN) num = INT_MIN;
+    if (num > INT_MAX) num = INT_MAX;
+    *dst = (int)num;
     return result;
 }
 
@@ -366,24 +369,23 @@ static int InternStrnicmp(const char* s1, const char* s2, size_t n)
 {
     int result;
 
-    if ((s1 == NULL) || (s2 == NULL))
-    {
-        result = -1;
-    }
+    if (s1 == NULL) result = -1;
+    else if (s2 == NULL) result = 1;
     else
     {
         result = 0;
-        while (((n--) >= 0) && ((*s1) != '\0') && ((*s2) != '\0') && (result == 0))
-        {
-            /* compute the difference between the chars */
-            result = TOLOWER(*s1) - TOLOWER(*s2);
-            s1++;
-            s2++;
-        }
 
-        if ((*s2) != '\0')
+        while(n-- && result == 0)
         {
-            result = -1;
+            if (*s1 == 0) result = -1;
+            else if (*s2 == 0) result = 1;
+            else
+            {
+
+                result = TOLOWER(*s1) - TOLOWER(*s2);
+                ++s1;
+                ++s2;
+            }
         }
     }
 
@@ -506,7 +508,7 @@ static int readLine(HTTP_HANDLE_DATA* http_instance, char* buf, const size_t max
 {
     int resultLineSize;
 
-    if ((http_instance == NULL) || (buf == NULL) || (maxBufSize < 0))
+    if ((http_instance == NULL) || (buf == NULL))
     {
         LogError("%s", ((http_instance == NULL) ? "Invalid HTTP instance" : "Invalid HTTP buffer"));
         resultLineSize = -1;
