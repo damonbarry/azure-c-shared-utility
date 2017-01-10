@@ -934,12 +934,12 @@ static HTTPAPI_RESULT RecieveContentInfoFromXIO(HTTP_HANDLE_DATA* http_instance,
     const char* substr;
     char* whereIsColon;
     int lengthInMsg;
-    const char* ContentLength = "content-length:";
-    const int ContentLengthSize = 16;
-    const char* TransferEncoding = "transfer-encoding:";
-    const int TransferEncodingSize = 19;
-    const char* Chunked = "chunked";
-    const int ChunkedSize = 8;
+    const char ContentLength[] = "content-length:";
+    const size_t ContentLengthSize = sizeof(ContentLength) - 1;
+    const char TransferEncoding[] = "transfer-encoding:";
+    const size_t TransferEncodingSize = sizeof(TransferEncoding) - 1;
+    const char Chunked[] = "chunked";
+    const size_t ChunkedSize = sizeof(Chunked) - 1;
 
     http_instance->is_io_error = 0;
 
@@ -959,7 +959,7 @@ static HTTPAPI_RESULT RecieveContentInfoFromXIO(HTTP_HANDLE_DATA* http_instance,
         {
             if (InternStrnicmp(buf, ContentLength, ContentLengthSize) == 0)
             {
-                substr = buf + ContentLengthSize - 1;
+                substr = buf + ContentLengthSize;
                 if (ParseStringToDecimal(substr, &lengthInMsg) != 1)
                 {
                     /*Codes_SRS_HTTPAPI_COMPACT_21_032: [ If the HTTPAPI_ExecuteRequest cannot read the message with the request result, it shall return HTTPAPI_READ_DATA_FAILED. ]*/
@@ -972,7 +972,7 @@ static HTTPAPI_RESULT RecieveContentInfoFromXIO(HTTP_HANDLE_DATA* http_instance,
             }
             else if (InternStrnicmp(buf, TransferEncoding, TransferEncodingSize) == 0)
             {
-                substr = buf + TransferEncodingSize - 1;
+                substr = buf + TransferEncodingSize;
 
                 while (isspace(*substr)) substr++;
 
